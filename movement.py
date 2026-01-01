@@ -2,6 +2,7 @@ import utils
 import water
 import farm
 
+# Returns the opposite direction
 def dir_invert(dir):
 	inverts = {
 		North: South,
@@ -11,8 +12,9 @@ def dir_invert(dir):
 	}
 	
 	return inverts[dir]
-	
-def move_to(x, y, harvest = True):
+
+# Moves the drone to some coordinates (vertically, then horizontally)
+def move_to(x, y):
 	cur_x = get_pos_x()
 	cur_y = get_pos_y()
 	
@@ -38,6 +40,7 @@ def move_to(x, y, harvest = True):
 		cur_x += move_x
 		cur_y += move_y
 
-def move_by(n, direction, harvest = True):
-	for _ in range(n):
-		move(direction)
+# Moves the drone by a fixed distance in a direction
+def move_by(dist, dir):
+	for _ in range(dist):
+		move(dir)

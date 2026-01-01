@@ -37,12 +37,14 @@ def cultivate(type, patch_width, patch_height, start_x = 0, start_y = 0, vertica
 			if y == (patch_height - 1):		
 				vertical_dir = movement.dir_invert(vertical_dir)
 			else:
-				movement.move_by(1, vertical_dir, utils.can_harvest_immediately(type))
+				movement.move_by(1, vertical_dir)
 			
 		if x != (patch_width - 1):
 			movement.move_by(1, East)
 
 companions = {}
+# Check if the tile has a companion and add its position to a dictionary
+# Also, if there is a companion that should be planted at this position, return its type
 def check_companion(x, y):
 	companion_type, comp_coords = (None, None)
 	companion = get_companion()
@@ -58,12 +60,14 @@ def check_companion(x, y):
 		
 	return type
 			
+# Plant then harvest some grass
 def grass():
 	if can_harvest():
 		harvest()
 	
 	plant(Entities.Grass)
 
+# Plant then harvest some trees and bushes in a grid pattern
 def tree(x, y):	
 	if can_harvest():
 		harvest()
@@ -72,13 +76,15 @@ def tree(x, y):
 		plant(Entities.Tree)
 	else:
 		plant(Entities.Grass)
-		
+
+# Plant then harvest some bushes		
 def bush():
 	if can_harvest():
 		harvest()
 		
 	plant(Entities.Bush)
 	
+# Plant then harvest some carrots
 def carrot():
 	if can_harvest():
 		harvest()
@@ -89,6 +95,7 @@ def carrot():
 	plant(Entities.Carrot)
 	water.fill()
 	
+# Plant then harvest some sunflowers
 sunflowers = []
 def sunflower():
 	if can_harvest():
@@ -100,6 +107,8 @@ def sunflower():
 	plant(Entities.Sunflower)
 	water.fill()
 
+# Check if sunflower should be harvested then plant another
+# Old method, is way less efficient than just planting and harvesting without checks
 def sunflower_old():
 	entity = get_entity_type()
 	if len(sunflowers) >= 10 and can_harvest() and entity == Entities.Sunflower:
@@ -120,6 +129,7 @@ def sunflower_old():
 		if size != None:
 			sunflowers.append(size)
 
+# Plant pumpkins until they are all grown into a big one then harvest it
 pumpkins = {}
 def pumpkin(patch_width, patch_height, start_x, start_y, x, y):
 	if get_ground_type() != Grounds.Soil:
@@ -143,6 +153,7 @@ def pumpkin(patch_width, patch_height, start_x, start_y, x, y):
 	
 	return "CONTINUE"
 
+# Plant cacti and sort them into ascending order then harvest them all at once when sorted
 sorted_cactus = {}
 def cactus(patch_width, patch_height, pos_x, pos_y, start_x, start_y, x, y):
 	if pos_x == start_x and pos_y == start_y:
@@ -170,6 +181,7 @@ def cactus(patch_width, patch_height, pos_x, pos_y, start_x, start_y, x, y):
 			swap(North)
 			sorted_cactus[(start_x, start_y)] = False
 		
+# Create a maze from a bush then hug the right wall until the treasure is found
 def treasure(maze_size, start_x, start_y):
 	if maths.is_even(maze_size):
 		movement.move_to(start_x + maze_size / 2, start_y + maze_size / 2)
@@ -177,9 +189,7 @@ def treasure(maze_size, start_x, start_y):
 		movement.move_to(start_x + (maze_size - 1) / 2, start_y + (maze_size - 1) / 2)
 	plant(Entities.Bush)
 	use_item(Items.Weird_Substance, maze_size * 2**(num_unlocked(Unlocks.Mazes) - 1))
-	# 1. Setup Direction mapping for easy rotation
-	# Order must be Clockwise: N -> E -> S -> W
-	# This allows us to use math to determine "Right" and "Left"
+	# Order is clockwise: N -> E -> S -> W
 	directions = [North, East, South, West]
 	current_dir_index = 0  # Assuming we start facing North (index 0)
 	
@@ -191,7 +201,7 @@ def treasure(maze_size, start_x, start_y):
 			treasure(maze_size, start_x, start_y)
 			return
 			
-		# Calculate which direction is to the RIGHT of our current facing
+		# Calculate which direction is to the RIGHT of the current facing
 		# (Index + 1) % 4 gives us the next direction clockwise
 		right_dir_index = (current_dir_index + 1) % 4
 		right_dir = directions[right_dir_index]
@@ -199,15 +209,13 @@ def treasure(maze_size, start_x, start_y):
 		# Calculate which direction is FORWARD (Current facing)
 		forward_dir = directions[current_dir_index]
 		
-		# --- Decision Logic ---
-		
 		# Priority 1: Hug the wall (Turn Right)
-		# If there is no wall to our right, we must turn there to follow the corner.
+		# If there is no wall to the right, turn there to follow the corner.
 		if can_move(right_dir):
 			current_dir_index = right_dir_index # Update facing
 			move(right_dir)
 		# Priority 2: Follow the wall (Go Straight)
-		# If there is a wall to our right, we try to continue forward.
+		# If there is a wall to the right, try to continue forward.
 		elif can_move(forward_dir):
 			move(forward_dir)
 			# Note: We do not change current_dir_index here

@@ -37,11 +37,12 @@ tasks = [
 	{'id': 32, 'type': Entities.Treasure, 'size': 5, 'x': 22, 'y': 22}
 ]
 
+# Returns a function to be executed by a drone
 def get_task(params):
 	func = None
 	id, type, x, y = params['id'], params['type'], params['x'], params['y']
 	if type == Entities.Treasure:
-		# Wait a bit to prevent drones from being stuck in another drone
+		# Wait a bit to prevent drones from being stuck in another drone's maze
 		for _ in range(5000):
 			pass
 		size = params['size']
@@ -64,5 +65,7 @@ def get_task(params):
 
 for n in range(len(tasks) - 1):
 	spawn_drone(get_task(tasks[n]))
-	
-get_task(tasks[len(tasks) - 1])()
+
+# Final drone
+task = get_task(tasks[len(tasks) - 1])
+task()
