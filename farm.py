@@ -130,6 +130,7 @@ def sunflower_old():
 			sunflowers.append(size)
 
 # Plant pumpkins until they are all grown into a big one then harvest it
+# Replant dead pumpkins with fertilizer
 pumpkins = {}
 def pumpkin(patch_width, patch_height, start_x, start_y, x, y):
 	if get_ground_type() != Grounds.Soil:
@@ -138,7 +139,7 @@ def pumpkin(patch_width, patch_height, start_x, start_y, x, y):
 	entity = get_entity_type()
 	if entity != Entities.Pumpkin:
 		plant(Entities.Pumpkin)
-		if entity == Entities.Dead_Pumpkin:
+		if entity == Entities.Dead_Pumpkin and num_items(Items.Fertilizer) > 0:
 			use_item(Items.Fertilizer)
 		else:
 			water.fill()
