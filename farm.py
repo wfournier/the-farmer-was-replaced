@@ -170,17 +170,19 @@ def cactus(patch_width, patch_height, pos_x, pos_y, start_x, start_y, x, y):
 	if get_entity_type() != Entities.Cactus:
 		plant(Entities.Cactus)
 	
-	if x != (patch_width - 1):
-		size_right = measure(East)
-		if size_right != None and measure() > size_right:
-			swap(East)
-			sorted_cactus[(start_x, start_y)] = False
-		
-	if y != (patch_height - 1):
-		size_up = measure(North)
-		if size_up != None and measure() > size_up:
-			swap(North)
-			sorted_cactus[(start_x, start_y)] = False
+	cur_size = measure()
+	if cur_size != None:
+		if x != (patch_width - 1):
+			size_right = measure(East)
+			if size_right != None and cur_size > size_right:
+				swap(East)
+				sorted_cactus[(start_x, start_y)] = False
+			
+		if y != (patch_height - 1):
+			size_up = measure(North)
+			if size_up != None and cur_size > size_up:
+				swap(North)
+				sorted_cactus[(start_x, start_y)] = False
 		
 # Create a maze from a bush then hug the right wall until the treasure is found
 def treasure(maze_size, start_x, start_y):

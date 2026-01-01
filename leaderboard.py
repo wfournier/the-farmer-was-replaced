@@ -1,0 +1,1 @@
+leaderboard_run(Leaderboards.Dinosaur, "dino_v2", 1000)

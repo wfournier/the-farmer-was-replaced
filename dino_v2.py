@@ -1,7 +1,7 @@
 import maths
 import movement
 
-world_size = 32
+world_size = 8
 if not maths.is_even(world_size) and world_size > 2:
 	world_size -= 1
 
@@ -33,4 +33,5 @@ while True:
 			if get_entity_type() == Entities.Apple:
 				apple_count += 1
 
-	change_hat(Hats.Wizard_Hat)
+	change_hat(Hats.Brown_Hat)
+	clear()

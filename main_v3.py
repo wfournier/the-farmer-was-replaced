@@ -1,8 +1,8 @@
-import farm
+import tasks
 
 clear()
 
-tasks = [
+drones = [
 	{'id': 1, 'type': Entities.Pumpkin, 'width': 6, 'height': 6, 'x': 0, 'y': 0},
 	{'id': 2, 'type': Entities.Pumpkin, 'width': 6, 'height': 6, 'x': 26, 'y': 0},
 	{'id': 3, 'type': Entities.Pumpkin, 'width': 6, 'height': 6, 'x': 0, 'y': 26},
@@ -37,35 +37,9 @@ tasks = [
 	{'id': 32, 'type': Entities.Treasure, 'size': 5, 'x': 22, 'y': 22}
 ]
 
-# Returns a function to be executed by a drone
-def get_task(params):
-	func = None
-	id, type, x, y = params['id'], params['type'], params['x'], params['y']
-	if type == Entities.Treasure:
-		# Wait a bit to prevent drones from being stuck in another drone's maze
-		for _ in range(5000):
-			pass
-		size = params['size']
-		def _t():
-			change_hat(Hats.Wizard_Hat)
-			while True:
-				#print(id)
-				farm.treasure(size, x, y)
-		func = _t
-	else:
-		width, height = params['width'], params['height']
-		def _x():
-			change_hat(Hats.Wizard_Hat)
-			while True:
-				#print(id)
-				farm.cultivate(type, width, height, x, y)
-		func = _x
-		
-	return func
-
-for n in range(len(tasks) - 1):
-	spawn_drone(get_task(tasks[n]))
+for i in range(len(drones) - 1):
+	spawn_drone(tasks.get_task(drones, i))
 
 # Final drone
-task = get_task(tasks[len(tasks) - 1])
+task = tasks.get_task(drones, len(drones) - 1)
 task()
